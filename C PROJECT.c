@@ -1,3 +1,11 @@
+/**
+ * Project Title: Cryptid Quest - The Terminal Labyrinth
+ * Course: BE (Hons.) CSE AI MICROSOFT - 1st Semester
+ * Institution: Chandigarh University
+ * Author: Moksh Yadav
+ * Description: A text-based roguelike RPG showcasing C fundamentals.
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -22,7 +30,7 @@ typedef struct {
 
 // Function Prototypes
 void clearScreen();
-void displayMenu();
+void pauseScreen();
 void startAdventure(Player *p);
 void saveGame(Player p);
 int loadGame(Player *p);
@@ -45,7 +53,7 @@ int main() {
         switch(choice) {
             case 1:
                 printf("\nEnter your hero's name: ");
-                scanf("%s", player.name);
+                scanf("%49s", player.name);
                 player.health = 100;
                 player.maxHealth = 100;
                 player.attack = 15;
@@ -57,11 +65,11 @@ int main() {
                 if (loadGame(&player)) {
                     printf("\nGame Loaded Successfully!\n");
                     printf("Welcome back, %s!\n", player.name);
-                    system("pause"); // Use getchar() if on Linux/macOS
+                    pauseScreen();
                     startAdventure(&player);
                 } else {
                     printf("\nNo saved game found!\n");
-                    system("pause");
+                    pauseScreen();
                 }
                 break;
             case 3:
@@ -69,6 +77,7 @@ int main() {
                 break;
             default:
                 printf("\nInvalid choice! Try again.\n");
+                pauseScreen();
         }
     } while(choice != 3);
 
@@ -76,12 +85,17 @@ int main() {
 }
 
 void clearScreen() {
-    // Simple screen clear technique for terminal
     #ifdef _WIN32
         system("cls");
     #else
         system("clear");
     #endif
+}
+
+void pauseScreen() {
+    printf("\nPress Enter to continue...");
+    while (getchar() != '\n'); // Clear buffer
+    getchar();
 }
 
 void startAdventure(Player *p) {
@@ -111,7 +125,6 @@ void startAdventure(Player *p) {
 
         switch(choice) {
             case 1:
-                // Combat turn
                 m->health -= p->attack;
                 printf("\nYou strike the %s for %d damage!\n", m->name, p->attack);
                 if (m->health > 0) {
@@ -123,7 +136,7 @@ void startAdventure(Player *p) {
                     printf("You looted %d gold.\n", m->rewardGold);
                     currentRoom++;
                 }
-                system("pause");
+                pauseScreen();
                 break;
             case 2:
                 if (p->potions > 0) {
@@ -134,27 +147,27 @@ void startAdventure(Player *p) {
                 } else {
                     printf("\nYou have no potions left!\n");
                 }
-                system("pause");
+                pauseScreen();
                 break;
             case 3:
                 saveGame(*p);
                 printf("\nGame Saved! Returning to main menu...\n");
-                system("pause");
+                pauseScreen();
                 return;
             default:
                 printf("\nInvalid action!\n");
-                system("pause");
+                pauseScreen();
         }
     }
 
     if (p->health <= 0) {
         clearScreen();
         printf("\nYOU DIED! Game Over.\n");
-        system("pause");
+        pauseScreen();
     } else if (currentRoom > 3) {
         clearScreen();
         printf("\nCONGRATULATIONS! You conquered the Labyrinth and escaped with %d gold!\n", p->gold);
-        system("pause");
+        pauseScreen();
     }
 }
 
@@ -171,7 +184,7 @@ void saveGame(Player p) {
 int loadGame(Player *p) {
     FILE *file = fopen("savegame.txt", "r");
     if (file == NULL) {
-        return 0; // File doesn't exist
+        return 0;
     }
     fscanf(file, "%s %d %d %d %d %d", p->name, &(p->health), &(p->maxHealth), &(p->attack), &(p->gold), &(p->potions));
     fclose(file);
