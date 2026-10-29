@@ -19,9 +19,17 @@ This project integrates core 1st-semester C programming concepts:
 
 Make sure you have a C compiler installed (like GCC). Open your terminal and run the following commands:
 
+
+AUTHOR 
+MOKSH YADAV
+26BAI10178
+CHANDIGARH UNIVERSITY, MOHALI
 ```bash
 # Compile the program
 gcc main.c -o cryptid_quest
 
+
+
 # Run the executable
 ./cryptid_quest
+}
